@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block body %}
+<section class="hero">
+    <div class="container hero-layout">
+        <div class="hero-copy">
+            <span class="eyebrow hero-eyebrow"><span class="tiny-dot"></span> LE SAVOIR, SANS FRONTIÈRES</span>
+            <h1>Votre avenir<br>s’apprend <em>ici.</em><span class="title-flourish" aria-hidden="true"></span></h1>
+            <p>Des compétences concrètes. Des perspectives nouvelles.<br class="desktop-break"> Trouvez votre voie avec des formations pensées pour vous,<br class="desktop-break"> en Guinée et partout en Afrique francophone.</p>
+            <form class="hero-search" action="{{ path('app_catalog') }}" method="get">
+                <label class="sr-only" for="hero-query">Que souhaitez-vous apprendre ?</label>{{ ui.icon('search') }}<input id="hero-query" name="q" placeholder="Que souhaitez-vous apprendre ?" type="search"><button class="button" type="submit">Explorer {{ ui.icon('arrow') }}</button>
+            </form>
+            <div class="hero-links"><span>Une envie, un projet ?</span><a href="{{ path('app_catalog', {domaine: 'Numérique'}) }}">Numérique</a><a href="{{ path('app_catalog', {domaine: 'Management'}) }}">Management</a><a href="{{ path('app_catalog', {domaine: 'Finance'}) }}">Finance</a></div>
+            <div class="hero-confidence"><span class="confidence-icon">{{ ui.icon('check') }}</span><span>En ligne. En présentiel. <strong>À votre rythme.</strong></span></div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-arch"><img src="{{ hero_image }}" alt="Des adultes africains apprennent et collaborent dans un espace lumineux, scène illustrative" width="640" height="800" fetchpriority="high"></div>
+            <div class="floating-note note-top"><span class="note-icon">{{ ui.icon('award') }}</span><div><strong>Le prochain chapitre,<br>c’est le vôtre.</strong><span>Apprenez. Progressez. Révélez-vous.</span></div></div>
+            <div class="floating-note note-bottom"><span class="small-avatar">AC</span><div><strong>Un pas de plus vers votre objectif</strong><span>Votre apprentissage vous accompagne.</span><div class="mini-progress"><i></i></div></div>{{ ui.icon('spark') }}</div>
+            <div class="hero-orbit" aria-hidden="true">{{ ui.icon('spark') }}</div>
+            <span class="hero-caption">Pensée pour la Guinée. Ouverte sur le monde.</span>
+        </div>
+    </div>
+</section>
+<section class="benefit-strip" aria-label="Les atouts de la plateforme"><div class="container">
+    <div>{{ ui.icon('award') }}<span>Des parcours <strong>certifiants</strong></span></div><div>{{ ui.icon('cap') }}<span>Du BTS <strong>au Master</strong></span></div><div>{{ ui.icon('phone') }}<span>Accessible <strong>sur mobile</strong></span></div><div>{{ ui.icon('globe') }}<span>Des savoirs <strong>sans frontières</strong></span></div>
+</div></section>
+<section class="section container" id="parcours">
+    <div class="section-heading"><div><span class="eyebrow">À CHAQUE AMBITION, SON PARCOURS</span><h2>Quel sera votre prochain pas ?</h2></div><p>Une nouvelle compétence ou un nouveau diplôme.<br>Choisissez le chemin qui vous ressemble.</p></div>
+    <div class="pathways">
+        <a class="pathway" href="{{ path('app_catalog', {programme: 'Certification'}) }}"><span class="icon-tile">{{ ui.icon('award') }}</span><div><h3>Formations certifiantes</h3><p>Des compétences qui font la différence.</p><small>Courtes, pratiques et orientées métier</small></div>{{ ui.icon('arrow') }}</a>
+        <a class="pathway" href="{{ path('app_catalog', {programme: 'BTS'}) }}"><span class="icon-tile peach">{{ ui.icon('briefcase') }}</span><div><h3>Programmes BTS</h3><p>Un premier pas vers le monde professionnel.</p><small>Des parcours en 2 ans</small></div>{{ ui.icon('arrow') }}</a>
+        <a class="pathway" href="{{ path('app_catalog', {programme: 'Licence'}) }}"><span class="icon-tile lavender">{{ ui.icon('cap') }}</span><div><h3>Programmes Licence</h3><p>Construisez des bases solides pour demain.</p><small>Des parcours en 3 ans</small></div>{{ ui.icon('arrow') }}</a>
+        <a class="pathway" href="{{ path('app_catalog', {programme: 'Master'}) }}"><span class="icon-tile blue">{{ ui.icon('spark') }}</span><div><h3>Programmes Master</h3><p>Donnez une nouvelle dimension à votre expertise.</p><small>Des parcours de spécialisation</small></div>{{ ui.icon('arrow') }}</a>
+    </div>
+</section>
+<section class="section featured-section"><div class="container">
+    <div class="section-heading"><div><span class="eyebrow">VOTRE PROCHAINE COMPÉTENCE COMMENCE ICI</span><h2>Des formations pour aller plus loin.</h2></div><a class="inline-link" href="{{ path('app_catalog') }}">Tout le catalogue {{ ui.icon('arrow') }}</a></div>
+    <div class="course-grid">{% for course in courses %}{% include 'components/course-card.html.twig' %}{% endfor %}</div>
+    <p class="subtle-note">Une sélection de programmes fictifs pour explorer le template. Tarifs donnés à titre d’exemple.</p>
+</div></section>
+<section class="section container learning-section">
+    <div class="learning-editorial"><span class="eyebrow">L’APPRENTISSAGE S’ADAPTE À VOTRE VIE</span><h2>Vos ambitions.<br>Votre rythme.<br><em>Votre façon d’apprendre.</em></h2><p>À Conakry ou ailleurs, depuis votre ordinateur ou votre téléphone, gardez le cap sur vos objectifs. Le présentiel et le numérique se complètent pour vous faire progresser.</p><a class="inline-link" href="{{ path('app_demo', {role: 'apprenant'}) }}">Découvrir l’espace apprenant {{ ui.icon('arrow') }}</a></div>
+    <div class="learning-options">
+        <a href="{{ path('app_catalog', {modalite: 'En ligne'}) }}"><span class="option-number">01</span><span class="icon-tile">{{ ui.icon('video') }}</span><div><h3>Apprenez où vous voulez</h3><p>Des cours et ressources accessibles en ligne, pour avancer à votre rythme.</p></div>{{ ui.icon('arrow') }}</a>
+        <a href="{{ path('app_catalog', {modalite: 'Présentiel'}) }}"><span class="option-number">02</span><span class="icon-tile peach">{{ ui.icon('users') }}</span><div><h3>Rencontrez, échangez, pratiquez</h3><p>Des ateliers et formations en présentiel, au plus près des réalités du terrain.</p></div>{{ ui.icon('arrow') }}</a>
+        <a href="{{ path('app_catalog', {modalite: 'Hybride'}) }}"><span class="option-number">03</span><span class="icon-tile lavender">{{ ui.icon('globe') }}</span><div><h3>Le meilleur des deux mondes</h3><p>Des parcours hybrides qui associent souplesse et accompagnement humain.</p></div>{{ ui.icon('arrow') }}</a>
+    </div>
+</section>
+<section class="partner-section"><div class="container partner-layout"><div><span class="eyebrow">ENSEMBLE, TRANSMETTONS PLUS LOIN</span><h2>Votre savoir mérite<br>de nouveaux <em>horizons.</em></h2><p>Vous êtes formateur, centre de formation ou université ?<br>Un espace dédié pour partager vos contenus, accompagner vos apprenants et développer vos programmes.</p><a class="button button-light" href="{{ path('app_establishments') }}">Découvrir les espaces partenaires {{ ui.icon('arrow') }}</a></div><div class="revenue-card"><span>UN MODÈLE QUI VALORISE VOTRE EXPERTISE</span><div class="revenue-number">85<span>%</span></div><h3>pour vous, nos partenaires.</h3><p>15 % pour la plateforme.<br>Un partage transparent, prévu sur chaque vente.</p><div class="revenue-bar"><i></i></div><small>Modèle prévu · aucun paiement actif sur ce template</small></div></div></section>
+<section class="section container final-cta"><span class="eyebrow">LE PLUS BEAU MOMENT POUR AVANCER, C’EST MAINTENANT</span><h2>Et si tout commençait par une formation ?</h2><a class="button" href="{{ path('app_catalog') }}">Trouver ma prochaine formation {{ ui.icon('arrow') }}</a></section>
+{% endblock %}

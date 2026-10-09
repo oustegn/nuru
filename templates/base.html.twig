@@ -1,0 +1,82 @@
+{% import 'components/icons.html.twig' as ui %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% set title %}{% block title %}Nuru — Votre avenir s’apprend ici{% endblock %}{% endset %}
+    {% set description %}{% block description %}Explorez un template de plateforme de formation pour la Guinée et l’Afrique francophone : certifications, BTS, Licence et Master, en ligne ou en présentiel.{% endblock %}{% endset %}
+    <title>{{ title|trim }}</title>
+    <meta name="description" content="{{ description|trim }}">
+    <meta name="keywords" content="formation, Guinée, apprentissage, certification, enseignement supérieur">
+    <meta name="theme-color" content="#087f68">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Nuru">
+    <meta property="og:title" content="{{ title|trim }}">
+    <meta property="og:description" content="{{ description|trim }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title|trim }}">
+    <meta name="twitter:description" content="{{ description|trim }}">
+    {% if public_origin %}
+        <link rel="canonical" href="{{ public_origin ~ app.request.pathInfo }}">
+        <meta property="og:url" content="{{ public_origin ~ app.request.pathInfo }}">
+        <meta property="og:image" content="{{ public_origin }}{{ hero_image }}">
+        <meta name="twitter:image" content="{{ public_origin }}{{ hero_image }}">
+    {% endif %}
+    {% block robots %}{% endblock %}
+    <link rel="icon" href="/assets/images/logo.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <script src="/assets/js/app.js" defer></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<a class="skip-link" href="#main">Aller au contenu</a>
+{% block header %}
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="brand" href="{{ path('app_home') }}" aria-label="Nuru, accueil">{{ ui.logo() }}<span>nuru<span class="brand-dot">.</span></span></a>
+        <button class="menu-toggle icon-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-navigation">{{ ui.icon('menu') }}</button>
+        <nav class="main-navigation" id="main-navigation" aria-label="Navigation principale">
+            <a class="{{ active|default('') == 'catalog' ? 'is-active' : '' }}" href="{{ path('app_catalog') }}">Explorer les formations {{ ui.icon('down') }}</a>
+            <a href="{{ path('app_catalog', {programme: 'Licence'}) }}">Programmes académiques</a>
+            <a class="{{ active|default('') == 'establishments' ? 'is-active' : '' }}" href="{{ path('app_establishments') }}">Établissements</a>
+        </nav>
+        <div class="header-actions">
+            <button class="text-button" data-open-dialog="roles-dialog">Mon espace</button>
+            <a class="button button-small" href="{{ path('app_catalog') }}">Trouver ma formation {{ ui.icon('arrow') }}</a>
+        </div>
+    </div>
+</header>
+{% endblock %}
+<main id="main">{% block body %}{% endblock %}</main>
+{% block footer %}
+<footer class="site-footer">
+    <div class="container footer-top">
+        <div class="footer-brand"><a class="brand" href="{{ path('app_home') }}">{{ ui.logo() }}<span>nuru.</span></a><p>Apprendre, progresser, transmettre.<br>Le savoir, sans frontières.</p><span class="location-label">{{ ui.icon('globe') }} Guinée & Afrique francophone</span></div>
+        <div><h3>Apprendre</h3><a href="{{ path('app_catalog') }}">Toutes les formations</a><a href="{{ path('app_catalog', {programme: 'Certification'}) }}">Formations certifiantes</a><a href="{{ path('app_catalog', {modalite: 'Présentiel'}) }}">Formations en présentiel</a></div>
+        <div><h3>Se développer</h3><a href="{{ path('app_catalog', {programme: 'BTS'}) }}">Programmes BTS</a><a href="{{ path('app_catalog', {programme: 'Licence'}) }}">Programmes Licence</a><a href="{{ path('app_catalog', {programme: 'Master'}) }}">Programmes Master</a></div>
+        <div><h3>Transmettre</h3><a href="{{ path('app_demo', {role: 'formateur'}) }}">Espace formateur · démo</a><a href="{{ path('app_establishments') }}">Espace établissement</a><a href="{{ path('app_demo', {role: 'etablissement'}) }}">Portail institutionnel · démo</a></div>
+    </div>
+    <div class="container footer-bottom"><span>© {{ 'now'|date('Y') }} Nuru · Template de démonstration</span><span>Conçu avec Symfony & Twig <span class="tiny-dot"></span> Pensé pour avancer</span></div>
+    <div class="container demo-footnote">Les formations, profils, tarifs et statistiques présentés sont fictifs. Aucun paiement, compte ou diplôme réel n’est créé sur cette démonstration.</div>
+</footer>
+{% endblock %}
+<dialog id="roles-dialog" class="modal" aria-labelledby="roles-title">
+    <button class="dialog-close icon-button" data-close-dialog aria-label="Fermer">{{ ui.icon('close') }}</button>
+    <span class="eyebrow">DÉCOUVREZ LA PLATEFORME</span><h2 id="roles-title">Un espace pour chacun.</h2><p>Explorez les interfaces avec des données fictives. Aucune connexion n’est nécessaire pour cette démonstration.</p>
+    <div class="role-links">
+        <a href="{{ path('app_demo', {role: 'apprenant'}) }}"><span class="icon-tile">{{ ui.icon('book') }}</span><span><strong>Je suis apprenant</strong><small>Mes cours, ma progression, mes objectifs</small></span>{{ ui.icon('arrow') }}</a>
+        <a href="{{ path('app_demo', {role: 'formateur'}) }}"><span class="icon-tile peach">{{ ui.icon('video') }}</span><span><strong>Je suis formateur</strong><small>Mes formations et mes apprenants</small></span>{{ ui.icon('arrow') }}</a>
+        <a href="{{ path('app_demo', {role: 'etablissement'}) }}"><span class="icon-tile lavender">{{ ui.icon('building') }}</span><span><strong>Je suis un établissement</strong><small>Mes programmes et mes candidatures</small></span>{{ ui.icon('arrow') }}</a>
+    </div>
+</dialog>
+<dialog id="action-dialog" class="modal" aria-labelledby="action-title">
+    <button class="dialog-close icon-button" data-close-dialog aria-label="Fermer">{{ ui.icon('close') }}</button>
+    <span class="badge badge-peach">Mode démonstration</span><h2 id="action-title">Aperçu de la fonctionnalité</h2><p id="action-description"></p>
+    <div class="notice">{{ ui.icon('spark') }} Cette interface est un template. Aucune donnée n’est enregistrée et aucune transaction n’est effectuée.</div>
+    <button class="button" data-close-dialog>J’ai compris {{ ui.icon('check') }}</button>
+</dialog>
+</body>
+</html>

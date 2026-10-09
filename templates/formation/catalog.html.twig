@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Explorez les formations et programmes — Nuru{% endblock %}
+{% block description %}Trouvez votre parcours : certifications, BTS, Licence ou Master. Filtrez les formations par domaine et modalité dans le catalogue de démonstration Nuru.{% endblock %}
+{% block body %}
+<section class="page-intro"><div class="container"><div class="breadcrumb"><a href="{{ path('app_home') }}">Accueil</a>{{ ui.icon('chevron') }}<span>Les formations</span></div><span class="eyebrow">UN SAVOIR QUI CHANGE LA SUITE</span><h1>Trouvez votre prochain <em>horizon.</em></h1><p>Explorez les parcours qui vous ressemblent. Une compétence à la fois, un objectif à la fois.</p></div></section>
+<section class="container catalog-section">
+    <form action="{{ path('app_catalog') }}" method="get" class="catalog-filters">
+        <div class="filter-search"><label for="catalog-query">Rechercher une formation</label><div>{{ ui.icon('search') }}<input id="catalog-query" type="search" name="q" value="{{ filters.q }}" placeholder="Un métier, une compétence, un programme…"></div></div>
+        {% for filter in [['domaine', 'Domaine', domains], ['programme', 'Programme', programs], ['modalite', 'Modalité', modalities]] %}
+        {% set key = filter[0] %}{% set label = filter[1] %}{% set options = filter[2] %}
+        <div class="filter-field"><label for="filter-{{ key }}">{{ label }}</label><select id="filter-{{ key }}" name="{{ key }}"><option value="">Tous les {{ key == 'modalite' ? 'formats' : (key == 'domaine' ? 'domaines' : 'programmes') }}</option>{% for option in options %}<option value="{{ option }}" {{ attribute(filters, key) == option ? 'selected' : '' }}>{{ option }}</option>{% endfor %}</select></div>
+        {% endfor %}
+        <button class="button" type="submit">Filtrer {{ ui.icon('search') }}</button>
+    </form>
+    <div class="catalog-toolbar"><span><strong>{{ courses|length }}</strong> formation{{ courses|length != 1 ? 's' : '' }} de démonstration</span><a href="{{ path('app_catalog') }}" class="inline-link">Réinitialiser les filtres {{ ui.icon('close') }}</a></div>
+    {% if courses|length %}<div class="course-grid">{% for course in courses %}{% include 'components/course-card.html.twig' %}{% endfor %}</div>{% else %}<div class="empty-state"><span class="icon-tile">{{ ui.icon('search') }}</span><h2>Un autre chemin vous attend.</h2><p>Aucune formation ne correspond à ces critères. Essayez un autre mot-clé ou élargissez votre recherche.</p><a class="button" href="{{ path('app_catalog') }}">Voir toutes les formations {{ ui.icon('arrow') }}</a></div>{% endif %}
+    <div class="notice catalog-notice">{{ ui.icon('spark') }} Catalogue fictif : les profils, programmes et prix sont des exemples. Les tarifs académiques sont indiqués par année. Aucune accréditation ou admission réelle n’est proposée.</div>
+</section>
+{% endblock %}

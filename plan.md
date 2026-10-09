@@ -1,0 +1,116 @@
+# Plan — Template Symfony de la plateforme de formation
+
+## 1. Objectif et périmètre
+
+Créer un **template de site moderne, responsive et entièrement en français**, adapté au projet de formation en Guinée et en Afrique francophone décrit dans votre présentation PDF.
+
+Le livrable sera une véritable application **Symfony avec templates Twig**, et non une maquette React présentée comme du Symfony. Il comprendra des pages publiques et des espaces de démonstration pour les apprenants, formateurs et établissements.
+
+**Périmètre : un template navigable avec données fictives cohérentes.** Les paiements, comptes utilisateurs, admissions, examens et certifications réels ne seront pas activés. Le document présente la vision complète du produit ; cette première réalisation en donnera une base visuelle et technique réutilisable, sans prétendre livrer tout le système de gestion.
+
+## 2. Pages et comportements prévus
+
+### Accueil — `/`
+- Navigation : formations, programmes académiques, établissements et accès à la démonstration.
+- Bandeau principal : « Votre avenir s’apprend ici », avec recherche et appel à explorer les formations.
+- Mise en avant des formations professionnelles, BTS, Licence et Master.
+- Sélection de formations, présentation de l’apprentissage en ligne et du présentiel, bénéfices pour les partenaires et pied de page complet.
+- Présentation fidèle du modèle économique : **85 % pour les partenaires et 15 % pour la plateforme**.
+- Aucun faux témoignage attribué à une personne réelle ni affirmation d’accréditation non établie.
+
+### Catalogue — `/formations`
+- Recherche par intitulé et filtres par domaine, type de programme et modalité.
+- Résultats issus d’un jeu de données de démonstration, état sans résultat et réinitialisation des filtres.
+- Cartes indiquant intitulé, catégorie, durée, modalité et prix d’exemple en **GNF**.
+- Liens de l’accueil vers le catalogue préfiltré pour les BTS, Licence et Master.
+
+### Détail d’une formation — `/formations/{slug}`
+- Description, objectifs, programme en modules, formateur ou établissement fictif, durée et tarif.
+- Pour le présentiel : lieu, dates, places d’exemple et statut « à venir », « en cours » ou « terminé ».
+- Bouton d’inscription ouvrant une explication du parcours prévu, explicitement signalé comme démonstration : aucun prélèvement ni inscription effective.
+- Réponse 404 pour une formation inexistante.
+
+### Établissements — `/etablissements`
+- Présentation de l’espace institutionnel et profils de partenaires fictifs clairement identifiés.
+- Mise en avant des programmes, candidatures, gestion pédagogique et modalités d’examen.
+- Précision que la validation académique et la délivrance des diplômes restent sous le contrôle de l’établissement partenaire.
+
+### Espaces de démonstration
+- `/demo/apprenant` : formations suivies, progression, prochaine session, ressources et exemples de certificats non officiels.
+- `/demo/formateur` : formations, apprenants, revenus d’exemple et répartition 85/15 ; aperçu des modules, documents et quiz.
+- `/demo/etablissement` : programmes, candidatures, admissions et indicateurs pédagogiques de démonstration.
+- Navigation entre rôles visible ; **aucune simulation trompeuse de connexion sécurisée**.
+- Les commandes uniquement illustratives seront identifiées comme telles ; les commandes de navigation et de filtrage seront fonctionnelles.
+
+## 3. Direction artistique
+
+- **Mouvement esthétique :** design éditorial contemporain associé à une interface EdTech sobre et haut de gamme.
+- **Principes :** lisibilité, respiration, inclusion et hiérarchie claire des actions.
+- **Palette :** ivoire pour la chaleur, bleu nuit pour la confiance, vert profond pour la progression, touches d’abricot pour les repères secondaires. Couleur signature : **vert émeraude `#087F68`**.
+- **Composition :** accueil asymétrique, texte ample à gauche et photographie à droite ; alternance de sections éditoriales, listes et cartes. Tableaux de bord avec navigation latérale et contenu organisé par priorité.
+- **Éléments distinctifs :** motif d’horizon, badges de modalité et fines lignes de progression émeraude.
+- **Typographie :** Fraunces pour les grands titres éditoriaux et Plus Jakarta Sans pour les textes et interfaces, avec polices de repli.
+- **Marque provisoire :** « Nuru — Apprendre, progresser, transmettre ». Un nom de travail, remplaçable sans modifier la structure du site. Personnalité : accessible, ambitieuse, fiable.
+- **Voix :** directe et encourageante. Exemples : « Des compétences concrètes. Des perspectives nouvelles. » et « Trouvez la formation qui vous fait avancer. »
+- **Logo :** monogramme N associé à un livre ouvert ; déclinaisons pour l’en-tête et le favicon.
+- **Visuels :** une image originale pour l’accueil illustrant des adultes africains en situation d’apprentissage, sans prétendre représenter un partenaire réel. Les tableaux de bord resteront sans décor superflu.
+- **Interactions :** actions principales contrastées, états de survol sobres, focus clavier visible et menu mobile accessible.
+- **Animation :** transitions courtes de 150 à 250 ms, sans effets lourds ; respect de `prefers-reduced-motion`.
+
+## 4. Mise en œuvre technique
+
+### Architecture
+- **Symfony 7.4 LTS**, PHP 8.2 minimum et Composer, avec versions verrouillées par `composer.lock`.
+- Rendu serveur **Twig** pour toutes les pages ; CSS responsive et JavaScript léger pour le menu, les onglets et les fenêtres de démonstration.
+- Un service de données d’exemple alimente les pages publiques et les tableaux de bord ; aucune base de données nécessaire pour ce template.
+- Contrôleurs Symfony et routes explicites ; paramètres de recherche via formulaires GET.
+- Métadonnées propres à chaque page publique et HTML sémantique. Les espaces de démonstration seront marqués `noindex`.
+
+### Structure prévue dans `/home/ubuntu/nuruforma`
+```text
+src/
+  Controller/           # Accueil, catalogue, établissements et démonstrations
+  Service/DemoCatalog.php # Données fictives et filtres du catalogue
+templates/
+  base.html.twig        # Structure commune, navigation et pied de page
+  components/           # Cartes, badges et composants partagés
+  home/                 # Accueil
+  formation/            # Catalogue et détail
+  establishment/        # Présentation des établissements
+  demo/                 # Les trois espaces métier
+public/
+  assets/css/           # Design system et styles responsive
+  assets/js/            # Interactions légères
+  assets/images/        # Visuels et identité
+  manus-routes.json     # Liste des pages pour l’aperçu
+config/                 # Configuration Symfony et Twig
+Dockerfile              # Exécution PHP reproductible pour l’hébergement
+README.md               # Installation, lancement et personnalisation
+TODO.md                 # Suivi des éléments convenus
+```
+
+### Environnement et livraison
+- L’espace de projet est disponible, mais **PHP et Composer ne sont pas encore installés** dans le sandbox. Leur installation sera effectuée après approbation.
+- L’aperçu servira l’application Symfony sur le port configuré **3000** ; le rendu des pages ne dépendra pas d’un serveur React.
+- Préparer un conteneur avec un serveur PHP adapté à l’hébergement, installation Composer reproductible et endpoint de santé non authentifié.
+- Livrer un **aperçu navigable**, le code sauvegardé du projet et une **archive ZIP du template**, avec instructions d’installation et de personnalisation.
+- Ne pas effectuer de publication publique explicite sans autorisation ; tenir compte d’un éventuel réglage de publication automatique déjà autorisé.
+
+## 5. Vérification prévue
+
+- Contrôler la syntaxe PHP, les templates Twig, la configuration Symfony et l’enregistrement des routes.
+- Vérifier les réponses HTTP des pages, la 404, le manifeste de routes et le chargement des ressources.
+- Vérifier les filtres du catalogue, les liens vers les détails et la cohérence des données partagées.
+- Contrôler les règles responsive, la navigation clavier, les libellés et les états des commandes de démonstration ; examiner visuellement uniquement en cas de défaut concret à diagnostiquer.
+- Vérifier que les espaces fictifs ne sont pas présentés comme sécurisés, que les certificats ne sont pas officiels et qu’aucune action financière réelle n’est déclenchée.
+- Vérifier la présence du code et du README dans l’archive finale.
+
+## 6. Hypothèses et risques
+
+- « Template » est interprété comme une base de site fonctionnelle à personnaliser, **pas comme une plateforme LMS complète en production**.
+- Le nom, le logo, les formations, prix, profils et statistiques seront provisoires. Leur remplacement par des contenus réels sera documenté.
+- Les images seront optimisées et les scripts limités pour les connexions modestes ; le téléchargement hors ligne et l’application Android/iOS sont hors périmètre.
+- L’authentification, la persistance des dossiers, les paiements mobiles, les commissions automatiques, la vidéo protégée et la conformité réglementaire devront faire l’objet d’une phase ultérieure.
+- En cas de blocage technique de l’environnement PHP, le problème sera communiqué ; **la technologie demandée ne sera pas remplacée silencieusement**.
+
+**L’implémentation du template commencera après votre approbation de ce plan.**

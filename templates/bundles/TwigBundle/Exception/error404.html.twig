@@ -1,0 +1,4 @@
+{% extends 'base.html.twig' %}
+{% block title %}Cette page reste à découvrir — Nuru{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+{% block body %}<section class="container empty-state error-page"><span class="eyebrow">404 · UN PETIT DÉTOUR</span><h1>Ce chemin n’existe pas.</h1><p>La page ou la formation recherchée n’est pas disponible.<br>Revenons vers de nouveaux horizons.</p><a class="button" href="{{ path('app_catalog') }}">Explorer les formations</a></section>{% endblock %}

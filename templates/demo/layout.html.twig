@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block body %}
+{% set role_names = {apprenant: 'Espace apprenant', formateur: 'Espace formateur', etablissement: 'Espace établissement'} %}
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <a class="brand" href="{{ path('app_home') }}">{{ ui.logo() }}<span>nuru.</span></a>
+        <div class="workspace-label">{{ role_names[role] }}<span class="badge">Démo</span></div>
+        <nav aria-label="Navigation de l’espace"><a class="is-active" href="{{ path('app_demo', {role: role}) }}">{{ ui.icon('grid') }} Vue d’ensemble</a><a href="#mes-formations">{{ ui.icon('book') }} {{ role == 'etablissement' ? 'Mes programmes' : 'Mes formations' }}</a><a href="#suivi">{{ ui.icon(role == 'apprenant' ? 'award' : 'users') }} {{ role == 'apprenant' ? 'Mes objectifs' : (role == 'formateur' ? 'Mes apprenants' : 'Candidatures') }}</a><button data-demo-title="Échanges pédagogiques" data-demo-description="Dans la plateforme finale, les apprenants pourront poser leurs questions, les formateurs répondre et les établissements partager leurs informations. Cette messagerie ne contient aucun échange réel.">{{ ui.icon('message') }} Discussions <span class="nav-count">Démo</span></button><button data-demo-title="Paramètres de votre espace" data-demo-description="L’identité, les accès et les préférences seront configurables une fois les comptes utilisateurs et les permissions intégrés. Aucun paramètre de compte réel n’est modifié ici.">{{ ui.icon('settings') }} Paramètres</button></nav>
+        <div class="sidebar-bottom"><div class="sidebar-help"><span>{{ ui.icon('spark') }} Un espace pour chacun</span><p>Découvrez les autres facettes de la plateforme.</p><button class="button button-outline button-small" data-open-dialog="roles-dialog">Changer de rôle {{ ui.icon('arrow') }}</button></div><a class="back-to-site" href="{{ path('app_home') }}">{{ ui.icon('globe') }} Retour au site</a></div>
+    </aside>
+    <div class="dashboard-content">
+        <header class="dashboard-topbar"><div><button class="icon-button dashboard-menu" type="button" aria-label="Ouvrir la navigation" aria-expanded="false" aria-controls="dashboard-sidebar">{{ ui.icon('menu') }}</button><span>{{ role_names[role] }}</span></div><div><span class="topbar-demo">Données fictives</span><button class="icon-button" aria-label="Notifications de démonstration" data-demo-title="Vos notifications" data-demo-description="Tout est à jour dans cet espace fictif. Les rappels de sessions et les notifications pédagogiques seront intégrés dans la plateforme finale.">{{ ui.icon('bell') }}</button><span class="profile-avatar">{{ role == 'apprenant' ? 'FB' : (role == 'formateur' ? 'MD' : 'UNA') }}</span></div></header>
+        <div class="demo-banner">{{ ui.icon('spark') }} <span><strong>Vous explorez un template.</strong> Profils, activités et montants fictifs. Aucun compte, admission ou paiement réel.</span><a href="{{ path('app_catalog') }}">Explorer le catalogue {{ ui.icon('arrow') }}</a></div>
+        <div class="dashboard-main">{% block dashboard %}{% endblock %}</div>
+        <div class="dashboard-bottom">Nuru · Démonstration {{ role_names[role]|lower }} <span>Symfony & Twig</span></div>
+    </div>
+</div>
+{% endblock %}
