@@ -1,0 +1,8 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Mon espace apprenant — Nuru{% endblock %}
+{% block workspace %}
+<section class="dashboard-panel"><div class="panel-heading"><h2>Votre profil</h2><span class="badge">Compte MySQL</span></div><dl class="profile-details"><div><dt>Nom</dt><dd>{{ app.user.nomComplet }}</dd></div><div><dt>E-mail</dt><dd>{{ app.user.email }}</dd></div><div><dt>Membre depuis</dt><dd>{{ app.user.creeLe|date('d/m/Y') }}</dd></div></dl></section>
+<section class="dashboard-panel"><div class="empty-state"><span class="icon-tile">{{ ui.icon('book') }}</span><h2>Votre parcours commence ici.</h2><p>Votre compte est bien enregistré. Le suivi des inscriptions, de la progression et des certificats sera ajouté dans une prochaine étape ; aucun cours suivi fictif ne vous est attribué.</p><a class="button" href="{{ path('app_catalog') }}">Explorer les formations {{ ui.icon('arrow') }}</a></div></section>
+<a class="inline-link" href="{{ path('app_demo', {role: 'apprenant'}) }}">Consulter séparément la maquette de progression · démo {{ ui.icon('arrow') }}</a>
+{% endblock %}

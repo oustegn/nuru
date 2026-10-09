@@ -1,0 +1,6 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Établissements — Administration Nuru{% endblock %}
+{% block workspace %}
+<section class="dashboard-panel"><div class="panel-heading"><h2>{{ pagination.total }} établissements en base</h2><span class="badge badge-outline">Lecture seule</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">Nom</th><th scope="col">Identifiant</th><th scope="col">Création</th></tr></thead><tbody>{% for institution in pagination.items %}<tr><td><strong>{{ institution.nom }}</strong></td><td>{{ institution.slug }}</td><td>{{ institution.creeLe|date('d/m/Y') }}</td></tr>{% else %}<tr><td colspan="3">Aucun établissement enregistré.</td></tr>{% endfor %}</tbody></table></div>{% include 'admin/_pagination.html.twig' %}</section>
+{% endblock %}

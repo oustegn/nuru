@@ -1,0 +1,17 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Administration — Nuru{% endblock %}
+{% block workspace %}
+<div class="admin-welcome"><span class="eyebrow">PILOTER LA PLATEFORME</span><h2>Une vision claire.<br><em>Des données réelles.</em></h2><p>Retrouvez les comptes, le catalogue et les établissements de votre base. Les inscriptions formateurs et établissements sont examinées dans un espace dédié ; les autres listes restent en lecture seule.</p><a class="button button-light button-small" href="{{ path('app_admin_users') }}">Consulter les utilisateurs {{ ui.icon('arrow') }}</a></div>
+<div class="stat-grid">
+    <a class="stat-card" href="{{ path('app_admin_users') }}"><span>Utilisateurs {{ ui.icon('users') }}</span><strong>{{ counts.users }}</strong><small>Comptes persistés</small></a>
+    <a class="stat-card" href="{{ path('app_admin_courses') }}"><span>Formations {{ ui.icon('book') }}</span><strong>{{ counts.courses }}</strong><small>Catalogue MySQL</small></a>
+    <a class="stat-card" href="{{ path('app_admin_institutions') }}"><span>Établissements {{ ui.icon('building') }}</span><strong>{{ counts.institutions }}</strong><small>Partenaires enregistrés</small></a>
+    <div class="stat-card"><span>Administrateurs {{ ui.icon('settings') }}</span><strong>{{ counts.admins }}</strong><small>Rôle explicitement attribué</small></div>
+</div>
+<section class="dashboard-panel"><div class="panel-heading"><h2>{{ counts.pending }} inscriptions en attente</h2><a class="button button-small" href="{{ path('app_admin_registrations') }}">Examiner les demandes</a></div><p>L’activation d’un formateur ou d’un établissement exige une adresse e-mail vérifiée et votre approbation.</p></section>
+<div class="dashboard-columns">
+    <section class="dashboard-panel"><div class="panel-heading"><h2>Derniers utilisateurs créés</h2><a class="inline-link" href="{{ path('app_admin_users') }}">Tout voir {{ ui.icon('arrow') }}</a></div>{% include 'admin/_users_table.html.twig' with {users: recent_users} %}</section>
+    <section class="dashboard-panel"><div class="panel-heading"><h2>Rôles pédagogiques</h2>{{ ui.icon('users') }}</div><div class="role-metric"><span>Apprenants</span><strong>{{ counts.learners }}</strong></div><div class="role-metric"><span>Formateurs</span><strong>{{ counts.teachers }}</strong></div><p>Les rôles sont cumulables : un même compte peut être apprenant et formateur. Ces compteurs portent sur les rôles enregistrés explicitement.</p><div class="notice">Les inscriptions aux formations, examens et paiements ne sont pas encore des processus métier réels. Les espaces /demo restent des illustrations séparées.</div></section>
+</div>
+{% endblock %}

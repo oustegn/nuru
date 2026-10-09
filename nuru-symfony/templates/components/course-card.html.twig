@@ -1,0 +1,14 @@
+{% import 'components/icons.html.twig' as ui %}
+<article class="course-card">
+    <a class="course-image-link" href="{{ path('app_course', {slug: course.slug}) }}" tabindex="-1" aria-hidden="true">
+        <img src="{{ course.image }}" alt="" loading="lazy" width="640" height="360">
+        <span class="image-badge">{{ ui.icon(course.modality == 'Présentiel' ? 'pin' : 'video') }} {{ course.modality }}</span>
+    </a>
+    <div class="course-card-body">
+        <div class="course-kicker"><span>{{ course.domain }}</span><span class="badge">{{ course.program }}</span></div>
+        <h3><a href="{{ path('app_course', {slug: course.slug}) }}">{{ course.title }}</a></h3>
+        <p class="course-provider">{{ course.provider }}</p>
+        <div class="course-meta"><span>{{ ui.icon('clock') }} {{ course.duration }}</span><span>{{ ui.icon('book') }} {{ course.modules|length }} modules</span></div>
+        <div class="course-card-bottom"><span><strong>{{ course.price|number_format(0, ',', ' ') }}</strong> <small>GNF</small>{% if course.program != 'Certification' %}<small class="price-unit"> / an · exemple</small>{% endif %}</span><a class="round-arrow" href="{{ path('app_course', {slug: course.slug}) }}" aria-label="Voir {{ course.title }}">{{ ui.icon('arrow') }}</a></div>
+    </div>
+</article>

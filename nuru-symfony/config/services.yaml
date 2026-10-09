@@ -1,0 +1,16 @@
+parameters:
+    env(CATALOG_SOURCE): 'demo'
+    env(DATABASE_URL): 'mysql://nuru_app:change-me@127.0.0.1:3306/nuru?serverVersion=8.0.0&charset=utf8mb4'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/Entity/'
+    App\Service\Catalog:
+        arguments:
+            $source: '%env(CATALOG_SOURCE)%'

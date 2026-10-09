@@ -1,103 +1,130 @@
-# Nuru — Template de plateforme de formation
+# Nuru — Plateforme de formation Symfony
 
-Un template **Symfony 7.4 LTS + Twig**, responsive et en français, inspiré du projet de plateforme de formation en Guinée et en Afrique francophone. « Nuru » est un nom de travail remplaçable.
+Base de site **Symfony 7.4 LTS + Twig**, responsive et en français, pour un projet de formation en Guinée et en Afrique francophone. « Nuru » est un nom de travail remplaçable. Le design est éditorial, ivoire et émeraude.
 
-## Ce que contient le template
+## Versions et guides
 
-L’accueil éditorial présente les formations professionnelles et les parcours BTS, Licence et Master. Le catalogue propose une recherche et des filtres fonctionnels. Chaque formation dispose d’une fiche avec objectifs, modules, durée et prix d’exemple en GNF ; les sessions en présentiel affichent leur lieu, dates, places et statut. Une page présente les établissements et le modèle partenaire **85 % / 15 %**.
+La version actuelle comprend **MySQL + Doctrine**, les entités `Etablissement`, `Formation`, `ModuleFormation` et **`User`**, une connexion locale e-mail/mot de passe, les rôles cumulables apprenant/formateur/admin et un tableau de bord administratif protégé.
 
-Trois espaces métier sont navigables : apprenant, formateur et établissement. Ils illustrent progression, cours, ressources, quiz, revenus, programmes et candidatures. Un mini-quiz Twig fournit un retour immédiat, sans enregistrer le résultat.
+L’inscription publique apprenant/formateur/établissement et la vérification e-mail avec SMTP sont désormais disponibles ; consultez [le guide inscriptions et validation admin](docs/inscriptions-validation-email.md).
 
-**Ce n’est pas un LMS de production.** Tous les profils, établissements, programmes, montants et indicateurs sont fictifs. Les vidéos, documents et certificats sont présentés sous forme d’aperçus explicatifs. Aucun compte sécurisé, paiement, inscription effective, candidature officielle ou diplôme réel n’est créé. Les boutons illustratifs ouvrent un dialogue qui l’indique.
+Pour votre poste de développement, suivez [le guide MySQL local](docs/mysql-local.md), puis [le guide utilisateurs et administration](docs/utilisateurs-admin.md). Ce dernier couvre aussi la mise à jour depuis la version MySQL précédente : la migration supplémentaire ne supprime pas les formations.
+
+## Ce qui fonctionne réellement
+
+Le catalogue propose recherche et filtres, fiches de formation, objectifs, modules, tarifs GNF et informations de session. `CATALOG_SOURCE=database` lit ces données depuis MySQL ; `CATALOG_SOURCE=demo` utilise explicitement les données PHP d’exemple. Aucun repli silencieux n’a lieu en cas de panne SQL.
+
+Les comptes sont persistés dans la table MySQL `user`, indépendante du nom du site, avec e-mail unique normalisé et mot de passe haché. Pour mettre à jour le nom historique `nuru_user`, suivez [le guide de renommage](docs/renommage-table-user.md). Symfony Security applique les contrôles CSRF, la limitation des tentatives, les sessions et les permissions. L’administrateur dispose des compteurs SQL et de listes paginées utilisateurs/formations/établissements **en lecture seule**, et d’une interface dédiée d’approbation/refus des inscriptions formateurs et établissements. Les formateurs voient uniquement les formations reliées à leur compte. L’apprenant dispose de son profil réel, mais pas encore d’inscriptions ou de progression individuelle.
+
+Les commandes `app:user:create`, `app:formation:create`, `app:formation:assign` et `app:database:seed` permettent de préparer votre base. La création de compte est interactive avec saisie masquée ; aucun compte ni mot de passe par défaut n’est livré.
+
+**Ce n’est pas encore un LMS de production.** Les anciens espaces `/demo/*` illustrent les progrès, revenus, quiz et candidatures avec des données fictives. Le mini-quiz ne persiste pas de résultat. Aucun paiement, diplôme officiel, admission ou inscription effective n’est activé. Les contenus d’exemple ne sont pas des offres accréditées.
+
+## Prérequis
+
+PHP **8.2 minimum** (testé avec 8.3), Composer 2, extensions ctype, iconv, PDO MySQL, mbstring et XML/DOM ; **MySQL 8** pour la persistance et les comptes. Aucun serveur Node n’est nécessaire. Les visuels sont inclus dans le projet.
 
 ## Installation locale
 
-Prérequis : **PHP 8.2 ou supérieur**, Composer 2 et extensions ctype, iconv, mbstring et XML/DOM. Le template a été exécuté avec PHP 8.3. Les images sont incluses ; aucun serveur Node ou moteur de base de données n’est nécessaire.
-
-Depuis le dossier extrait :
+Extrayez l’archive dans un nouveau dossier pour préserver vos propres changements. Depuis la racine :
 
 ```bash
 composer install
-cp .env.example .env
-php -r '$p=".env"; file_put_contents($p, str_replace("replace-this-template-secret", bin2hex(random_bytes(32)), file_get_contents($p)));'
+```
+
+Créez `.env` avec `APP_ENV=dev`, puis adaptez `.env.dev.example` en `.env.dev`. Renseignez votre secret et votre URL MySQL. Pour localhost HTTP, utilisez `SESSION_SECURE=0` et `SESSION_SAMESITE=lax`. La base et un utilisateur dédié doivent être créés comme indiqué dans le guide MySQL.
+
+```bash
+php bin/console cache:clear --env=dev
+php bin/console doctrine:migrations:migrate --env=dev
+php bin/console app:database:seed --env=dev
+php bin/console app:user:create admin@nuru.local VotrePrenom VotreNom --role=ROLE_ADMIN --env=dev
 php -S 127.0.0.1:3000 -t public router.php
 ```
 
-Ouvrez `http://127.0.0.1:3000`. Sous Windows, copiez `.env.example` vers `.env` avec votre explorateur si la commande `cp` n’est pas disponible. Le serveur PHP intégré est **réservé au développement**.
+La commande de création demande votre mot de passe en saisie masquée. Connectez-vous à **http://127.0.0.1:3000/connexion**. Le serveur PHP intégré est réservé au développement. Votre `.env` et `.env.dev` sont exclus de Git ; `.env.dev.local` est également exclu et prend priorité.
 
-## Les pages
+Pour explorer uniquement les pages publiques sans MySQL, copiez `.env.example` en `.env`, remplacez son secret et gardez `CATALOG_SOURCE=demo`. Les vrais comptes et espaces privés nécessitent MySQL, quel que soit le mode du catalogue.
 
-| Route | Contenu |
+## Pages
+
+| Route | Contenu / protection |
 | --- | --- |
-| `/` | Accueil |
-| `/formations` | Catalogue et filtres GET |
-| `/formations/{slug}` | Fiche de formation ; 404 si inconnue |
-| `/etablissements` | Présentation des espaces partenaires |
-| `/demo/apprenant` | Progression, cours et mini-quiz |
-| `/demo/formateur` | Formations, apprenants et revenus fictifs |
-| `/demo/etablissement` | Programmes et candidatures fictives |
-| `/_app/health` | Santé technique JSON |
-| `/manus-routes.json` | Manifeste des pages pour Manus |
+| `/` | Accueil public |
+| `/formations` | Catalogue, filtres GET |
+| `/formations/{slug}` | Détail, vraie 404 si inconnue |
+| `/etablissements` | Présentation éditoriale des partenaires |
+| `/connexion` | Connexion locale, CSRF |
+| `/inscription` | Choix du profil et formulaires publics |
+| `/verification-email/renvoyer` | Renvoi limité de vérification |
+| `/admin/inscriptions` | Examen, approbation/refus des formateurs et établissements |
+| `/espace/etablissement` | Structure liée au représentant validé |
+| `/mon-espace` | Redirection selon le rôle, compte connecté |
+| `/espace/apprenant` | Profil réel, rôle apprenant/admin |
+| `/espace/formateur` | Formations affectées au compte, rôle formateur/admin |
+| `/admin` | Tableau de bord, rôle admin |
+| `/admin/utilisateurs` | Comptes, recherche, pagination ; admin |
+| `/admin/formations` | Formations et formateurs affectés ; admin |
+| `/admin/etablissements` | Établissements persistés ; admin |
+| `/demo/apprenant`, `/demo/formateur`, `/demo/etablissement` | Maquettes publiques, fictives et distinctes |
+| `/deconnexion` | POST CSRF, pas de GET |
+| `/_app/health` | Santé technique JSON du serveur |
+| `/manus-routes.json` | Manifeste des 25 pages et motifs |
 
-Exemples de filtres : `/formations?programme=BTS`, `/formations?domaine=Numérique`, `/formations?modalite=Présentiel`, `/formations?q=Symfony`. Les espaces `/demo/` renvoient `noindex, nofollow` et ne constituent **pas** une zone protégée par authentification.
+Les espaces privés sont `noindex` et `no-store`. Le serveur renvoie 403 pour un compte connecté qui n’a pas le rôle requis. Les démonstrations restent publiques et ne donnent aucun privilège.
 
-## Personnalisation
+## Structure et personnalisation
 
-| Élément | Fichiers principaux |
+| Élément | Fichiers |
 | --- | --- |
-| Couleurs, espacements, polices et responsive | `public/assets/css/app.css` ; variables en tête de fichier |
-| Nom, navigation, pied de page et métadonnées | `templates/base.html.twig` |
-| Contenu de l’accueil | `templates/home/index.html.twig` |
-| Catalogue, prix, objectifs et modules | `src/Service/DemoCatalog.php` |
-| Profils et statistiques de démonstration | `templates/demo/*.html.twig` |
-| Comportements des dialogues, menus et quiz | `public/assets/js/app.js` |
-| Logo et favicon | `public/assets/images/logo.svg` |
-| Visuels d’illustration | `public/manus-storage/async-images/` |
-| Routage et rendu | `src/Controller/WebsiteController.php` |
+| Entités et relations MySQL | `src/Entity/` |
+| Requêtes, recherche et pagination | `src/Repository/` |
+| Adaptateur de catalogue Twig | `src/Service/Catalog.php` |
+| Jeu fictif et source de l’import | `src/Service/DemoCatalog.php` |
+| Connexion et contrôle des sessions | `src/Security/`, `config/packages/security.yaml` |
+| Commandes de préparation | `src/Command/` |
+| Tableau de bord administratif | `src/Controller/AdminController.php`, `templates/admin/` |
+| Espaces connectés et connexion | `templates/account/`, `templates/security/` |
+| Design system et responsive | `public/assets/css/app.css` |
+| Marque et navigation | `templates/base.html.twig` |
+| Interactions des maquettes | `public/assets/js/app.js` |
+| Logo et visuels | `public/assets/images/`, `public/manus-storage/` |
+| Schéma versionné | `migrations/` |
 
-Les photographies sont des illustrations originales générées ; elles ne représentent pas de personnes ou de partenaires identifiés. Les chemins `/manus-storage/…` restent compatibles avec le stockage Manus. Leurs copies dans `public/manus-storage/` permettent aussi l’utilisation autonome du template hors de Manus.
+Les photographies générées sont des illustrations : elles ne représentent pas des partenaires identifiés. Leurs copies locales permettent un usage autonome hors de Manus. Fraunces et Plus Jakarta Sans sont chargées depuis Google Fonts, avec polices de repli ; elles peuvent être auto-hébergées.
 
-Les titres utilisent **Fraunces**, les interfaces **Plus Jakarta Sans**, chargées depuis Google Fonts. Des polices système prennent le relais si le service est inaccessible. Pour un site sans dépendance externe, vous pouvez auto-héberger les fichiers de police et adapter les déclarations CSS.
-
-### Domaine public et référencement
-
-Laissez `SITE_PUBLIC_ORIGIN` vide pour un usage local. Sur votre domaine final, renseignez une origine HTTPS **sans barre oblique finale**, par exemple `https://formation.example.org`. Symfony générera les balises canonical et de partage à partir de cette valeur explicite, jamais à partir d’un hôte interne.
-
-Le contenu et les métadonnées sont rendus côté serveur. Dans Manus, sitemap et robots sont gérés par la passerelle ; pour un hébergement indépendant, ajoutez ces documents selon votre politique d’indexation et excluez les espaces de démonstration.
+Laissez `SITE_PUBLIC_ORIGIN` vide en local. Sur un domaine final, fournissez une origine HTTPS sans barre oblique finale. Les URL publiques ne sont pas dérivées du nom d’hôte interne. Pour un hébergement indépendant, configurez sitemap et robots et excluez les routes privées et de démonstration.
 
 ## Vérifications
 
 ```bash
 composer validate --strict
-php bin/console lint:yaml config
-php bin/console lint:twig templates
-php bin/console debug:router
-node --check public/assets/js/app.js   # facultatif ; nécessite Node
-php tests/check.php                   # serveur local sur 3000 déjà démarré
+php bin/console lint:yaml config --env=dev
+php bin/console lint:twig templates --env=dev
+php bin/console lint:container --env=dev
+php bin/console doctrine:schema:validate --env=dev
+php tests/check.php
+php tests/persistence.php
 ```
 
-Le script de contrôle vérifie le catalogue, ses filtres, les pages HTTP, les vraies 404, les balises des démonstrations, les images locales et le manifeste de routes. Il utilise les fonctions standard de PHP, sans dépendance de test supplémentaire.
+Les tests HTTP nécessitent le serveur sur 3000 et le jeu d’exemple ; leur origine peut être changée avec `TEST_BASE_URL`. Le test de persistance crée ses objets dans une transaction puis effectue un rollback.
 
-## Hébergement PHP en conteneur
+`tests/authentication.py` et son helper testent les permissions, CSRF, invalidation des sessions inactives et pagination avec plus de vingt entrées. Ils requièrent Python et `requests` et **refusent toute base dont le nom ne finit pas par `_test` ou `_validation`**. Ils nettoient seulement leurs propres objets temporaires. Consultez le guide utilisateurs avant leur utilisation.
 
-Le `Dockerfile` prépare **Apache + PHP 8.3**, installe les dépendances verrouillées et sert uniquement `public/`. Le point d’entrée respecte `PORT` et écoute sur 3000 par défaut. Les réécritures Apache dirigent les pages vers Symfony. Le contrat Manus utilise `/_app/health` pour vérifier le démarrage.
+## Conteneur et production ultérieure
 
-```bash
-docker build -t nuru-template .
-docker run --rm -p 3000:3000 \
-  -e APP_SECRET="$(php -r 'echo bin2hex(random_bytes(32));')" \
-  -e SITE_PUBLIC_ORIGIN=https://formation.example.org \
-  nuru-template
-```
+Le `Dockerfile` prépare Apache + PHP 8.3, PDO MySQL, dépendances verrouillées et migrations. Il sert uniquement `public/`, respecte `PORT` et écoute sur 3000 par défaut. Aucune migration et aucun compte admin ne sont créés automatiquement au démarrage.
 
-Définissez `APP_SECRET` de façon stable dans votre hébergement. Le conteneur refuse de démarrer si cette variable n’est pas fournie. Dans un déploiement Manus, ajoutez cette variable dans les paramètres sécurisés du projet avant de publier. Utilisez HTTPS en production. Le conteneur est préparé par le code ; sa construction et son déploiement hébergé ne sont pas présentés comme déjà effectués.
+Fournissez un `APP_SECRET` stable, `DATABASE_URL` et `CATALOG_SOURCE=database` à l’exécution pour utiliser les comptes et le catalogue SQL. Pour un aperçu HTTPS intégré, les cookies utilisent explicitement `SESSION_SECURE=1` / `SESSION_SAMESITE=none`. En localhost HTTP, utilisez les valeurs locales, pas celles du conteneur HTTPS.
 
-## Passage à une plateforme réelle
+Les envois de vérification utilisent Symfony Mailer et votre MAILER_DSN, avec APP_PUBLIC_ORIGIN et MAILER_FROM explicites. Le transport null://null des exemples n’envoie rien et ne valide jamais une adresse.
 
-Avant une utilisation réelle, intégrer la persistance (par exemple Doctrine et une base SQL), les comptes et rôles, les permissions des établissements, les inscriptions et admissions, le stockage protégé des vidéos et documents, les prestataires de paiement mobile et leurs webhooks, les conditions de certification et la conformité réglementaire. La validation académique, le jury et la délivrance des diplômes restent sous la responsabilité des établissements partenaires.
+Les sessions sont locales à l’instance ; prévoyez un stockage partagé avant un déploiement multi-instance. La base doit être accessible depuis l’hébergement : son `127.0.0.1` n’est pas votre poste. La construction Docker et la publication hébergée n’ont pas été effectuées dans cette livraison.
 
-N’utilisez pas les données fictives comme offre commerciale ni les profils de démonstration comme dossiers officiels. Les modules de l’application mobile et du téléchargement hors ligne ne sont pas inclus dans ce template web.
+## Prochaines étapes métier
+
+Il reste à implémenter les inscriptions, progressions, résultats d’évaluation, admissions, droits des établissements, stockage protégé des contenus, paiement mobile et webhooks, récupération de mot de passe et gestion web des comptes au-delà de la validation initiale. La validation académique et la délivrance des diplômes restent sous contrôle des établissements partenaires.
 
 ## État de livraison
 
-Symfony 7.4.20 a été exécuté avec PHP 8.3. Les 60 contrôles du script, la syntaxe PHP/JavaScript, les configurations YAML, les templates Twig et l’injection de dépendances passent. Les réponses de l’aperçu ont été vérifiées localement et publiquement. Le conteneur n’a pas été publié : un secret stable doit être configuré avant publication.
+**80 contrôles d’inscription, 60 contrôles HTTP du site, 9 contrôles de persistance et 90 contrôles HTTP de sécurité réussis** dans une base de validation MySQL. Les commandes de création masquée et d’affectation ont également été vérifiées. Le schéma est cohérent et les templates, YAML, PHP et injections passent leurs contrôles. Aucun compte de test ni administrateur par défaut n’est conservé dans les livrables.

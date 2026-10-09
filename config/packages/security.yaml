@@ -1,0 +1,38 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: auto
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_APPRENANT, ROLE_FORMATEUR]
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(assets|manus-storage)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
+            entry_point: App\Security\LoginFormAuthenticator
+            login_throttling:
+                max_attempts: 5
+                interval: '1 minute'
+            logout:
+                path: app_logout
+                target: app_login
+                enable_csrf: true
+                csrf_parameter: _csrf_token
+                csrf_token_id: logout
+    access_control:
+        - { path: '^/connexion$', roles: PUBLIC_ACCESS }
+        - { path: '^/admin(?:/|$)', roles: ROLE_ADMIN }
+        - { path: '^/espace/apprenant$', roles: ROLE_APPRENANT }
+        - { path: '^/espace/formateur$', roles: ROLE_FORMATEUR }
+        - { path: '^/espace/etablissement$', roles: ROLE_ETABLISSEMENT }
+        - { path: '^/mon-espace$', roles: ROLE_USER }
+        - { path: '^/deconnexion$', roles: ROLE_USER }

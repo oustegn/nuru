@@ -1,0 +1,8 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Mon espace formateur — Nuru{% endblock %}
+{% block workspace %}
+<section class="dashboard-panel"><div class="panel-heading"><h2>Vos formations affectées</h2><span class="badge">{{ courses|length }} formation{{ courses|length != 1 ? 's' : '' }}</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">Formation</th><th scope="col">Établissement</th><th scope="col">Modalité</th><th scope="col">Catalogue</th></tr></thead><tbody>{% for course in courses %}<tr><td><strong>{{ course.titre }}</strong></td><td>{{ course.etablissement.nom }}</td><td>{{ course.modalite }}</td><td><a class="inline-link" href="{{ path('app_course', {slug: course.slug}) }}">Voir la fiche {{ ui.icon('arrow') }}</a></td></tr>{% else %}<tr><td colspan="4">Aucune formation ne vous a encore été affectée. Contactez l’administrateur de la plateforme.</td></tr>{% endfor %}</tbody></table></div></section>
+<div class="notice">Les formations de cette liste sont réellement reliées à votre compte. La gestion des apprenants, des revenus et des contenus depuis des formulaires sera développée séparément.</div>
+<a class="inline-link" href="{{ path('app_demo', {role: 'formateur'}) }}">Consulter séparément le tableau de bord illustratif · démo {{ ui.icon('arrow') }}</a>
+{% endblock %}

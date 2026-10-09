@@ -1,0 +1,8 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Utilisateurs — Administration Nuru{% endblock %}
+{% block workspace %}
+<form class="admin-search" method="get" action="{{ path('app_admin_users') }}"><label for="user-search">Rechercher par nom ou e-mail</label><div><input id="user-search" type="search" name="q" value="{{ q }}" maxlength="200"><button class="button button-small" type="submit">Rechercher</button><a class="inline-link" href="{{ path('app_admin_users') }}">Réinitialiser</a></div></form>
+<section class="dashboard-panel"><div class="panel-heading"><h2>{{ pagination.total }} utilisateur{{ pagination.total != 1 ? 's' : '' }}</h2><span class="badge badge-outline">Lecture seule</span></div>{% include 'admin/_users_table.html.twig' with {users: pagination.items} %}{% include 'admin/_pagination.html.twig' %}</section>
+<div class="notice">La création des comptes et l’attribution initiale des rôles passent par la commande locale app:user:create. Aucun formulaire public ne permet de devenir administrateur.</div>
+{% endblock %}

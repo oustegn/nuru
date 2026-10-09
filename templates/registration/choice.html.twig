@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Créer un compte — Nuru{% endblock %}
+{% block body %}
+<section class="page-intro"><div class="container"><span class="eyebrow">REJOINDRE LA PLATEFORME</span><h1>À chacun<br><em>son chemin.</em></h1><p>Choisissez le profil qui correspond à votre activité. Tous les comptes nécessitent la vérification de leur e-mail.</p></div></section>
+<section class="container section"><div class="registration-profiles">
+<a class="institution-card" href="{{ path('app_register', {profile: 'apprenant'}) }}"><span class="icon-tile">{{ ui.icon('book') }}</span><h2>Apprenant</h2><p>Préparez votre parcours et retrouvez votre espace personnel.</p><span class="badge">Activation après e-mail vérifié</span><span class="inline-link">Créer mon compte {{ ui.icon('arrow') }}</span></a>
+<a class="institution-card" href="{{ path('app_register', {profile: 'formateur'}) }}"><span class="icon-tile peach">{{ ui.icon('video') }}</span><h2>Formateur</h2><p>Présentez votre expertise pour rejoindre l’équipe pédagogique.</p><span class="badge badge-peach">E-mail + validation admin</span><span class="inline-link">Proposer mon profil {{ ui.icon('arrow') }}</span></a>
+<a class="institution-card" href="{{ path('app_register', {profile: 'etablissement'}) }}"><span class="icon-tile blue">{{ ui.icon('building') }}</span><h2>Établissement</h2><p>Créez le compte représentant de votre structure de formation.</p><span class="badge badge-peach">E-mail + validation admin</span><span class="inline-link">Inscrire ma structure {{ ui.icon('arrow') }}</span></a>
+</div><p class="subtle-note">Déjà inscrit ? <a class="inline-link" href="{{ path('app_login') }}">Me connecter</a></p></section>
+{% endblock %}

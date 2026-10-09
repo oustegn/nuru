@@ -73,7 +73,7 @@ check($status === 200, 'Paramètre de recherche non scalaire géré');
 check($status === 200 && !str_contains($body, '<script>alert(1)</script>'), 'Échappement de la recherche');
 [$status, $body] = getPage('/manus-routes.json');
 $manifest = json_decode($body, true);
-check($status === 200 && count($manifest['routes'] ?? []) === 7, 'Manifeste de 7 pages et motifs');
+check($status === 200 && count($manifest['routes'] ?? []) === 25, 'Manifeste de 25 pages et motifs');
 foreach (['/assets/css/app.css', '/assets/js/app.js', '/assets/images/logo.svg', '/manus-storage/async-images/hkkAVIBcheWMvfKsmS4nT4/image-1.webp'] as $asset) {
     [$status] = getPage($asset);
     check($status === 200, 'Ressource '.$asset);

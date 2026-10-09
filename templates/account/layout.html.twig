@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block body_class %}dashboard-page secure-portal{% endblock %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block body %}
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <a class="brand" href="{{ path('app_home') }}">{{ ui.logo() }}<span>nuru.</span></a>
+        <div class="workspace-label">Mon compte<span class="badge">Connecté</span></div>
+        <nav aria-label="Navigation de votre compte">
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="{{ section == 'admin' ? 'is-active' : '' }}" href="{{ path('app_admin') }}">{{ ui.icon('grid') }} Vue d’ensemble</a>
+                <a class="{{ section == 'registrations' ? 'is-active' : '' }}" href="{{ path('app_admin_registrations') }}">{{ ui.icon('users') }} Inscriptions à valider</a>
+                <a class="{{ section == 'users' ? 'is-active' : '' }}" href="{{ path('app_admin_users') }}">{{ ui.icon('users') }} Utilisateurs</a>
+                <a class="{{ section == 'courses' ? 'is-active' : '' }}" href="{{ path('app_admin_courses') }}">{{ ui.icon('book') }} Formations</a>
+                <a class="{{ section == 'institutions' ? 'is-active' : '' }}" href="{{ path('app_admin_institutions') }}">{{ ui.icon('building') }} Établissements</a>
+            {% endif %}
+            {% if is_granted('ROLE_APPRENANT') %}<a class="{{ section == 'learner' ? 'is-active' : '' }}" href="{{ path('app_learner') }}">{{ ui.icon('award') }} Espace apprenant</a>{% endif %}
+            {% if is_granted('ROLE_FORMATEUR') %}<a class="{{ section == 'teacher' ? 'is-active' : '' }}" href="{{ path('app_teacher') }}">{{ ui.icon('video') }} Espace formateur</a>{% endif %}
+            {% if is_granted('ROLE_ETABLISSEMENT') %}<a class="{{ section == 'institution' ? 'is-active' : '' }}" href="{{ path('app_institution_account') }}">{{ ui.icon('building') }} Mon établissement</a>{% endif %}
+            <a href="{{ path('app_catalog') }}">{{ ui.icon('globe') }} Catalogue public</a>
+        </nav>
+        <div class="sidebar-bottom"><p class="portal-identity"><strong>{{ app.user.nomComplet }}</strong><span>{{ app.user.email }}</span></p><form method="post" action="{{ path('app_logout') }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}"><button class="button button-outline button-block button-small" type="submit">Me déconnecter</button></form><a class="back-to-site" href="{{ path('app_home') }}">{{ ui.icon('globe') }} Retour au site</a></div>
+    </aside>
+    <div class="dashboard-content">
+        <header class="dashboard-topbar"><div><button class="icon-button dashboard-menu" type="button" aria-label="Ouvrir la navigation" aria-expanded="false" aria-controls="dashboard-sidebar">{{ ui.icon('menu') }}</button><span>{{ heading }}</span></div><div><span class="topbar-demo">Espace privé</span><span class="profile-avatar" aria-label="{{ app.user.nomComplet }}">{{ app.user.prenom|slice(0,1)|upper }}{{ app.user.nom|slice(0,1)|upper }}</span></div></header>
+        <div class="dashboard-main">
+            <div class="dashboard-heading"><div><span class="eyebrow">NURU · ESPACE AUTHENTIFIÉ</span><h1>{{ heading }}<span class="greeting-dot">.</span></h1><p>Bonjour {{ app.user.prenom }}. Votre compte et vos autorisations sont lus depuis MySQL.</p></div></div>
+            {% block workspace %}{% endblock %}
+        </div>
+        <div class="dashboard-bottom">Nuru · Connexion locale Symfony Security <span>Accès contrôlé par rôle</span></div>
+    </div>
+</div>
+{% endblock %}

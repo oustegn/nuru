@@ -1,0 +1,7 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Formations — Administration Nuru{% endblock %}
+{% block workspace %}
+<section class="dashboard-panel"><div class="panel-heading"><h2>{{ pagination.total }} formations en base</h2><span class="badge badge-outline">Lecture seule</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">Formation</th><th scope="col">Établissement</th><th scope="col">Compte formateur</th><th scope="col">Prix GNF</th></tr></thead><tbody>{% for course in pagination.items %}<tr><td><a class="inline-link" href="{{ path('app_course', {slug: course.slug}) }}">{{ course.titre }}</a><small>{{ course.programme }} · {{ course.modalite }}</small></td><td>{{ course.etablissement.nom }}</td><td>{% if course.formateurUtilisateur %}{{ course.formateurUtilisateur.nomComplet }}{% else %}<span class="badge badge-muted">Non affecté</span><small>Libellé historique : {{ course.formateur }}</small>{% endif %}</td><td>{{ course.prix|number_format(0, ',', ' ') }}</td></tr>{% else %}<tr><td colspan="4">Aucune formation enregistrée.</td></tr>{% endfor %}</tbody></table></div>{% include 'admin/_pagination.html.twig' %}</section>
+<div class="notice">L’affectation à un compte formateur existant est disponible via app:formation:assign. Les anciens noms fictifs ne créent pas automatiquement des comptes.</div>
+{% endblock %}

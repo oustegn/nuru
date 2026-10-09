@@ -1,0 +1,7 @@
+/vendor/
+/var/
+/.env
+/.env.local
+/.env.*.local
+/.env.dev
+/.env.local.php

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\DemoCatalog;
+use App\Service\Catalog;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,13 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class WebsiteController extends AbstractController
 {
     #[Route('/', name: 'app_home', methods: ['GET'])]
-    public function home(DemoCatalog $catalog): Response
+    public function home(Catalog $catalog): Response
     {
         return $this->render('home/index.html.twig', ['courses' => $catalog->featured(), 'active' => 'home']);
     }
 
     #[Route('/formations', name: 'app_catalog', methods: ['GET'])]
-    public function catalog(Request $request, DemoCatalog $catalog): Response
+    public function catalog(Request $request, Catalog $catalog): Response
     {
         $filters = [];
         foreach (['q', 'domaine', 'programme', 'modalite'] as $key) {
@@ -26,13 +26,13 @@ final class WebsiteController extends AbstractController
         }
         return $this->render('formation/catalog.html.twig', [
             'active' => 'catalog', 'courses' => $catalog->filter($filters), 'filters' => $filters,
-            'domains' => DemoCatalog::DOMAINS, 'programs' => DemoCatalog::PROGRAMS,
-            'modalities' => DemoCatalog::MODALITIES,
+            'domains' => Catalog::DOMAINS, 'programs' => Catalog::PROGRAMS,
+            'modalities' => Catalog::MODALITIES,
         ]);
     }
 
     #[Route('/formations/{slug}', name: 'app_course', requirements: ['slug' => '[a-z0-9-]+'], methods: ['GET'])]
-    public function course(string $slug, DemoCatalog $catalog): Response
+    public function course(string $slug, Catalog $catalog): Response
     {
         $course = $catalog->find($slug);
         if ($course === null) {
@@ -48,7 +48,7 @@ final class WebsiteController extends AbstractController
     }
 
     #[Route('/demo/{role}', name: 'app_demo', requirements: ['role' => 'apprenant|formateur|etablissement'], methods: ['GET'])]
-    public function demo(string $role, DemoCatalog $catalog): Response
+    public function demo(string $role, Catalog $catalog): Response
     {
         $response = $this->render('demo/'.$role.'.html.twig', [
             'active' => 'demo', 'role' => $role, 'courses' => $catalog->featured(),

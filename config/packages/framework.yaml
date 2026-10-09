@@ -2,6 +2,13 @@ framework:
     secret: '%env(APP_SECRET)%'
     router:
         utf8: true
+    csrf_protection: true
+    session:
+        name: nuru_session
+        handler_id: null
+        cookie_httponly: true
+        cookie_secure: '%env(bool:SESSION_SECURE)%'
+        cookie_samesite: '%env(SESSION_SAMESITE)%'
     handle_all_throwables: true
     http_method_override: false
     php_errors:

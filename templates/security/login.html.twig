@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Connexion — Nuru{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block body %}
+<section class="auth-section container">
+    <div class="auth-story"><span class="eyebrow">VOTRE ESPACE PERSONNEL</span><h1>Apprendre.<br>Transmettre.<br><em>Vous retrouver.</em></h1><p>Un compte, plusieurs possibilités. Retrouvez votre espace apprenant, vos formations ou l’administration selon vos autorisations.</p><a class="inline-link" href="{{ path('app_catalog') }}">Explorer les formations {{ ui.icon('arrow') }}</a></div>
+    <div class="auth-card">
+        <span class="badge">Connexion locale sécurisée</span><h2>Heureux de vous revoir.</h2><p>Connectez-vous avec votre compte activé.</p>
+        {% if error %}<div class="auth-error" role="alert">Connexion impossible. Vérifiez vos identifiants ou réessayez plus tard.</div>{% endif %}
+        <form method="post" action="{{ path('app_login') }}" class="auth-form">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <label for="login-email">Adresse e-mail</label><input type="email" id="login-email" name="email" value="{{ last_username }}" autocomplete="username" maxlength="180" required autofocus>
+            <label for="login-password">Mot de passe</label><input type="password" id="login-password" name="password" autocomplete="current-password" required maxlength="4096">
+            <button class="button button-block" type="submit">Me connecter {{ ui.icon('arrow') }}</button>
+        </form>
+        <div class="notice">Pas encore de compte ? <a class="inline-link" href="{{ path('app_registration_choice') }}">Créer mon compte</a></div>
+        <a class="inline-link" href="{{ path('app_resend_verification') }}">Renvoyer l’e-mail de vérification</a><br><a class="inline-link" href="{{ path('app_home') }}">Retour au site</a>
+    </div>
+</section>
+{% endblock %}

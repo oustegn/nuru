@@ -1,0 +1,11 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    file_name_pattern: '*.twig'
+    strict_variables: true
+    globals:
+        public_origin: '%env(SITE_PUBLIC_ORIGIN)%'
+        hero_image: '/manus-storage/async-images/hkkAVIBcheWMvfKsmS4nT4/image-1.webp'
+
+when@dev:
+    twig:
+        auto_reload: true

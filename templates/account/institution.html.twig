@@ -1,0 +1,6 @@
+{% extends 'account/layout.html.twig' %}
+{% import 'components/icons.html.twig' as ui %}
+{% block title %}Mon établissement — Nuru{% endblock %}
+{% block workspace %}
+<section class="dashboard-panel"><div class="panel-heading"><h2>Votre établissement</h2><span class="badge">Compte validé</span></div>{% if app.user.etablissement %}<dl class="profile-details"><div><dt>Structure</dt><dd>{{ app.user.etablissement.nom }}</dd></div><div><dt>Ville</dt><dd>{{ app.user.etablissement.ville|default('Non renseignée') }}</dd></div><div><dt>Adresse</dt><dd>{{ app.user.etablissement.adresse|default('Non renseignée') }}</dd></div><div><dt>Site déclaré</dt><dd>{{ app.user.etablissement.siteWeb|default('Non renseigné') }}</dd></div><div><dt>Représentant</dt><dd>{{ app.user.nomComplet }}</dd></div><div><dt>Contact e-mail</dt><dd>{{ app.user.email }}</dd></div></dl>{% else %}<p>Aucun établissement n’est relié à ce compte. Contactez l’administrateur.</p>{% endif %}</section><div class="notice">Les données de votre inscription sont persistées. La gestion web des programmes, admissions et documents sera ajoutée séparément.</div>
+{% endblock %}

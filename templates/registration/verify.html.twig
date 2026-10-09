@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+{% block title %}Vérifier mon adresse e-mail — Nuru{% endblock %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block social_origin %}{% endblock %}
+{% block external_fonts %}{% endblock %}
+{% block body %}<section class="container section"><div class="auth-card registration-result">{% if valid %}<span class="badge">CONFIRMATION D’ADRESSE</span><h1>C’est bien votre e-mail ?</h1><p>Confirmez pour poursuivre votre inscription. Aucun compte n’est activé par la simple ouverture de ce lien.</p><form method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token(verification_csrf_id) }}"><button class="button button-block" type="submit">Confirmer mon adresse e-mail</button></form>{% else %}<h1>Ce lien n’est plus valide.</h1><p>Il a expiré, a déjà été utilisé ou a été remplacé. Demandez un nouveau message si votre adresse n’est pas encore vérifiée.</p><a class="button" href="{{ path('app_resend_verification') }}">Renvoyer un lien</a>{% endif %}</div></section>{% endblock %}
